@@ -1,7 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { Link, Button, Dropdown, Separator, Header } from "@heroui/react";
+import {
+  Link,
+  Button,
+  Dropdown,
+  Separator,
+  Header,
+  Spinner,
+} from "@heroui/react";
 import {
   Bars,
   Briefcase,
@@ -11,8 +18,24 @@ import {
   ArrowRightFromSquare,
   CircleQuestion,
 } from "@gravity-ui/icons";
+import { useSession, signOut } from "../lib/auth-client";
+import { toast } from "sonner";
 
 export default function NavBar({ logoSrc = "/images/logo.png" }) {
+  const { data: session, isPending } = useSession();
+  const user = session?.user;
+
+  const handleSignOut = async () => {
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/signin");
+          toast.success("Signed out successfully.");
+        },
+      },
+    });
+  };
+
   return (
     <div className="sticky top-0 z-40 w-full px-4 sm:px-6 pt-4">
       <nav className="mx-auto flex h-14 max-w-5xl items-center justify-between rounded-2xl border border-white/10 bg-[#111117]/90 px-4 sm:px-6 backdrop-blur-md shadow-[0_4px_32px_rgba(0,0,0,0.4)]">
@@ -32,7 +55,7 @@ export default function NavBar({ logoSrc = "/images/logo.png" }) {
           )}
         </Link>
 
-        {/* Desktop nav — md এবং উপরে */}
+        {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-6">
           <Link
             href="/jobs"
@@ -55,23 +78,39 @@ export default function NavBar({ logoSrc = "/images/logo.png" }) {
 
           <div className="h-5 w-px bg-white/20" />
 
-          <Link
-            href="/sign-in"
-            className="text-sm font-medium text-white/80 hover:text-white transition-colors"
-          >
-            Sign In
+          {isPending ? (
+            <Spinner size="sm" color="secondary" />
+          ) : user ? (
+            <>
+              Hi, {user.name.split(" ")[0]} 👋
+              <Link
+                onClick={handleSignOut}
+                href="/signin"
+                className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+              >
+                Sign Out
+              </Link>
+            </>
+          ) : (
+            <Link
+              href="/signin"
+              className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+            >
+              Sign In
+            </Link>
+          )}
+
+          <Link href="signup">
+            <Button className="bg-[#5b42f3] hover:bg-[#6b52ff] text-white text-sm font-semibold rounded-lg px-5 h-9 min-w-0 shadow-[0_2px_16px_rgba(91,66,243,0.4)] transition-colors">
+              Get Started
+            </Button>
           </Link>
-          <Button
-            as={Link}
-            href="/get-started"
-            className="bg-[#5b42f3] hover:bg-[#6b52ff] text-white text-sm font-semibold rounded-lg px-5 h-9 min-w-0 shadow-[0_2px_16px_rgba(91,66,243,0.4)] transition-colors"
-          >
-            Get Started
-          </Button>
         </div>
 
         {/* Mobile — Hamburger Dropdown */}
-        <div className="flex md:hidden">
+        <div className="flex md:hidden items-center gap-2">
+          {isPending && <Spinner size="sm" color="secondary" />}
+
           <Dropdown>
             <Button
               isIconOnly
@@ -158,7 +197,7 @@ export default function NavBar({ logoSrc = "/images/logo.png" }) {
                   <Dropdown.Item
                     id="sign-in"
                     textValue="Sign In"
-                    href="/sign-in"
+                    href="/signin"
                   >
                     <div className="flex h-8 items-start justify-center pt-px">
                       <ArrowRightFromSquare className="size-4 shrink-0 text-muted" />
@@ -174,7 +213,7 @@ export default function NavBar({ logoSrc = "/images/logo.png" }) {
                   <Dropdown.Item
                     id="get-started"
                     textValue="Get Started"
-                    href="/get-started"
+                    href="/signup"
                   >
                     <div className="flex h-8 items-start justify-center pt-px">
                       <Person className="size-4 shrink-0 text-muted" />
