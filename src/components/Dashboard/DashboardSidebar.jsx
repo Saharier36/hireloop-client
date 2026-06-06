@@ -12,6 +12,7 @@ import {
   MdPeople,
   MdSettings,
 } from "react-icons/md";
+import { useSession } from "@/lib/auth-client";
 
 const navItems = [
   { icon: MdDashboard, label: "Dashboard", href: "/dashboard" },
@@ -21,7 +22,7 @@ const navItems = [
   { icon: MdSettings, label: "Settings", href: "/dashboard/settings" },
 ];
 
-function SidebarContent({ pathname }) {
+function SidebarContent({ pathname, user }) {
   return (
     <div className="flex h-full flex-col bg-[#111117] w-56">
       {/* Logo */}
@@ -43,13 +44,15 @@ function SidebarContent({ pathname }) {
         <div className="flex items-center gap-3">
           {/* Avatar */}
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#5b42f3] to-[#f97316] text-white text-xs font-bold">
-            AS
+            {user?.name
+              ? user.name.split(" ")[0].slice(0, 2).toUpperCase()
+              : "AS"}
           </div>
           <div className="flex flex-col min-w-0">
             <p className="text-sm font-semibold text-white truncate">
-              Alex Sterling
+              {user?.name || "Anonymous"}
             </p>
-            <p className="text-xs text-white/40 truncate">Recruiter</p>
+            <p className="text-xs text-white/40 truncate">{user?.role}</p>
           </div>
         </div>
 
@@ -94,12 +97,14 @@ function SidebarContent({ pathname }) {
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const user = session?.user;
 
   return (
     <>
       {/* ── Desktop sidebar — always visible md+ ── */}
       <aside className="hidden md:flex h-screen sticky top-0 shrink-0 border-r border-white/[0.06]">
-        <SidebarContent pathname={pathname} />
+        <SidebarContent pathname={pathname} user={user} />
       </aside>
 
       {/* ── Mobile — Drawer ── */}
@@ -119,7 +124,7 @@ export default function DashboardSidebar() {
               <Drawer.Dialog className="p-0 bg-[#111117] border-r border-white/[0.06] max-w-[224px]">
                 <Drawer.CloseTrigger className="absolute top-3 right-3 text-white/40 hover:text-white z-10" />
                 <Drawer.Body className="p-0">
-                  <SidebarContent pathname={pathname} />
+                  <SidebarContent pathname={pathname} user={user} />
                 </Drawer.Body>
               </Drawer.Dialog>
             </Drawer.Content>
