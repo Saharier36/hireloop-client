@@ -1,7 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
   reactCompiler: true,
+  turbopack: {
+    resolveAlias: {
+      "kysely/migration": "kysely",
+    },
+  },
+  webpack(config) {
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      "kysely/migration": "kysely",
+    };
+    return config;
+  },
 };
 
 export default nextConfig;
