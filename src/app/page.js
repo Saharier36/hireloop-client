@@ -1,9 +1,9 @@
-import CtaSection from "@/components/CtaSection";
-import FeaturesSection from "@/components/FeaturesSection";
-import Hero from "@/components/Hero";
-import PricingSection from "@/components/PricingSection";
+import CtaSection from "@/components/Home/CtaSection";
+import FeaturesSection from "@/components/Home/FeaturesSection";
+import Hero from "@/components/Home/Hero";
+import PricingSection from "@/components/Home/PricingSection";
 
-import Stats from "@/components/Stats";
+import Stats from "@/components/Home/Stats";
 
 export default function Home() {
   return (

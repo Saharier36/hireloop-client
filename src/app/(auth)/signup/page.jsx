@@ -3,7 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Button, InputGroup } from "@heroui/react";
+import {
+  Button,
+  Description,
+  InputGroup,
+  Radio,
+  RadioGroup,
+} from "@heroui/react";
 import {
   Fieldset,
   FieldGroup,
@@ -21,6 +27,7 @@ export default function SignUp() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [role, setRole] = useState("seeker")
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -31,6 +38,7 @@ export default function SignUp() {
 
     const { data, error } = await signUp.email({
       ...signUpData,
+      role
     });
 
     if (error) {
@@ -40,7 +48,7 @@ export default function SignUp() {
     }
 
     toast.success("Sign up successful!");
-    router.push("/signin");
+    router.push("/");
   }
 
   return (
@@ -51,7 +59,7 @@ export default function SignUp() {
         <div className="absolute -bottom-40 -right-40 h-[400px] w-[400px] rounded-full bg-[#f97316]/8 blur-[130px]" />
       </div>
 
-      <div className="w-full max-w-[380px]">
+      <div className="w-full max-w-[430px]">
         <div className="mx-6 h-px bg-gradient-to-r from-transparent via-[#5b42f3]/50 to-transparent" />
 
         <div className="rounded-2xl border border-white/[0.08] bg-[#13131a] shadow-[0_20px_60px_rgba(0,0,0,0.6)] px-6 py-7">
@@ -156,6 +164,40 @@ export default function SignUp() {
                   </InputGroup>
                   <FieldError className="text-[11px] text-red-400" />
                 </TextField>
+                {/* Role Selection */}
+                <div className="flex flex-col gap-4">
+                  <Label>Choose Your Role</Label>
+
+                  <RadioGroup
+                  onChange={value => setRole(value)}
+                    defaultValue="seeker"
+                    name="role"
+                    orientation="horizontal"
+                    selected
+                  >
+                    <Radio value="seeker">
+                      <Radio.Control>
+                        <Radio.Indicator />
+                      </Radio.Control>
+
+                      <Radio.Content>
+                        <Label>Job Seeker</Label>
+                        <Description>Find and apply for jobs</Description>
+                      </Radio.Content>
+                    </Radio>
+
+                    <Radio value="recruiter">
+                      <Radio.Control>
+                        <Radio.Indicator />
+                      </Radio.Control>
+
+                      <Radio.Content>
+                        <Label>Recruiter</Label>
+                        <Description>Post jobs and hire talent</Description>
+                      </Radio.Content>
+                    </Radio>
+                  </RadioGroup>
+                </div>
               </FieldGroup>
             </Fieldset>
 

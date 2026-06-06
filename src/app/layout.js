@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NavBar from "@/components/NavBar";
-import Footer from "@/components/Footer";
+import NavBar from "@/components/Layout/NavBar";
+import Footer from "@/components/Layout/Footer";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({
@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "HireLoop — Find Your Dream Job Today",
-  description: "HireLoop connects top talent with world-class companies. Browse thousands of curated opportunities and land your next role — faster.",
+  description:
+    "HireLoop connects top talent with world-class companies. Browse thousands of curated opportunities and land your next role — faster.",
 };
 
 export default function RootLayout({ children }) {

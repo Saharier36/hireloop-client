@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import {
   Link,
   Button,
@@ -18,10 +19,13 @@ import {
   ArrowRightFromSquare,
   CircleQuestion,
 } from "@gravity-ui/icons";
-import { useSession, signOut } from "../lib/auth-client";
+import { useSession, signOut } from "../../lib/auth-client";
 import { toast } from "sonner";
 
 export default function NavBar({ logoSrc = "/images/logo.png" }) {
+  const pathname = usePathname();
+
+  if (pathname && pathname.startsWith("/dashboard")) return null;
   const { data: session, isPending } = useSession();
   const user = session?.user;
 
@@ -70,7 +74,7 @@ export default function NavBar({ logoSrc = "/images/logo.png" }) {
             Company
           </Link>
           <Link
-            href="/pricing"
+            href="#pricing"
             className="text-sm font-medium text-white/75 hover:text-white transition-colors"
           >
             Pricing
@@ -157,7 +161,7 @@ export default function NavBar({ logoSrc = "/images/logo.png" }) {
                   <Dropdown.Item
                     id="pricing"
                     textValue="Pricing"
-                    href="/pricing"
+                    href="#pricing"
                   >
                     <div className="flex h-8 items-start justify-center pt-px">
                       <Tag className="size-4 shrink-0 text-muted" />

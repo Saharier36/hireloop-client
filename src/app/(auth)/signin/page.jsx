@@ -51,7 +51,7 @@ export default function SignIn() {
         <div className="absolute -bottom-40 -right-40 h-[400px] w-[400px] rounded-full bg-[#f97316]/8 blur-[130px]" />
       </div>
 
-      <div className="w-full max-w-[380px]">
+      <div className="w-full max-w-[430px]">
         <div className="mx-6 h-px bg-gradient-to-r from-transparent via-[#5b42f3]/50 to-transparent" />
 
         <div className="rounded-2xl border border-white/[0.08] bg-[#13131a] shadow-[0_20px_60px_rgba(0,0,0,0.6)] px-6 py-7">
