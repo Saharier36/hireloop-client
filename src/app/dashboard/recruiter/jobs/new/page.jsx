@@ -20,13 +20,11 @@ import {
   FiMapPin,
   FiCalendar,
 } from "react-icons/fi";
-// Sonner import করা হয়েছে
 import { toast } from "sonner";
 import { createJob } from "@/lib/actions/jobs";
 import { redirect } from "next/navigation";
 
 export default function PostJobPage() {
-  // Mock auto-filled company data for the recruiter
   const currentCompany = {
     id: "comp_12345",
     name: "NovaStream Architecture",
@@ -36,7 +34,6 @@ export default function PostJobPage() {
   const [isRemote, setIsRemote] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // Dropdown values managed through explicit component state keys
   const [category, setCategory] = useState("");
   const [jobType, setJobType] = useState("");
   const [currency, setCurrency] = useState("USD");
@@ -46,7 +43,6 @@ export default function PostJobPage() {
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
-    // Basic Validation Engine
     const newErrors = {};
     if (!data.jobTitle?.trim()) newErrors.jobTitle = "Job title is required.";
     if (!category) newErrors.jobCategory = "Please select a category.";
@@ -56,43 +52,40 @@ export default function PostJobPage() {
     if (!data.description?.trim())
       newErrors.description = "Job description is required.";
 
-    // Sync visual errors to state fields
     setErrors(newErrors);
 
-    // FIXME: যদি কোনো এরর থাকে, তবে সাবমিশন থামিয়ে টোস্ট দেখাবে
     if (Object.keys(newErrors).length > 0) {
       toast.error("Please fill in all the required fields!", {
         description: "Check the missing input indicators below.",
         position: "top-right",
       });
-      return; // এখানেই এক্সিকিউশন শেষ হবে, নিচে যাবে না
+      return;
     }
 
-    // Payload formatting for Database transmission
     const payload = {
       ...data,
       jobCategory: category,
       jobType: jobType,
       currency: currency,
-      isRemote,
+      isRemote: isRemote ? "true" : "false",
       companyId: currentCompany.id,
       status: "active",
       createdAt: new Date().toISOString(),
     };
 
-
+    if (isRemote) {
+      payload.location = "Remote";
+    }
 
     const res = await createJob(payload);
     if (res.insertedId) {
-      // 🟢 SUCCESS TOAST: ডেটা সফলভাবে পাস হলে
       toast.success("Job listed successfully!", {
         description: `${data.jobTitle} has been published.`,
       });
       e.target.reset();
       setIsRemote(false);
-      redirect ("/dashboard/recruiter")
+      redirect("/dashboard/recruiter/jobs");
     }
-    // এখানে আপনার API বা Database-এ পাঠানোর লজিক লিখতে পারেন
   };
 
   if (!currentCompany.isApproved) {
@@ -125,22 +118,18 @@ export default function PostJobPage() {
           </p>
         </div>
 
-        {/* Form Component */}
         <Form
           onSubmit={handleSubmit}
           validationBehavior="aria"
           className="p-6 space-y-8"
         >
-          {/* SECTION 1: Job Info */}
-          <Fieldset
-            legend="Job Info"
-            classNames={{
-              legend:
-                "text-sm font-semibold tracking-wide uppercase text-zinc-400 border-b border-[#1f1f23] pb-2 w-full mb-4",
-            }}
-          >
+      
+          <Fieldset>
+            <legend className="text-sm font-semibold tracking-wide uppercase text-zinc-400 border-b border-[#1f1f23] pb-2 w-full mb-4">
+              Job Info
+            </legend>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Job Title */}
               <TextField
                 isInvalid={!!errors.jobTitle}
                 className="flex flex-col gap-1"
@@ -163,7 +152,6 @@ export default function PostJobPage() {
                 )}
               </TextField>
 
-              {/* Job Category */}
               <div className="flex flex-col gap-1">
                 <span className="text-zinc-300 font-medium text-xs">
                   Job Category
@@ -216,7 +204,6 @@ export default function PostJobPage() {
                 )}
               </div>
 
-              {/* Job Type */}
               <div className="flex flex-col gap-1">
                 <span className="text-zinc-300 font-medium text-xs">
                   Job Type
@@ -260,7 +247,6 @@ export default function PostJobPage() {
                 )}
               </div>
 
-              {/* Application Deadline */}
               <TextField className="flex flex-col gap-1">
                 <Label className="text-zinc-300 font-medium text-xs">
                   Application Deadline
@@ -276,7 +262,6 @@ export default function PostJobPage() {
               </TextField>
             </div>
 
-            {/* Salary Panel */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
               <TextField className="flex flex-col gap-1">
                 <Label className="text-zinc-300 font-medium text-xs">
@@ -342,7 +327,6 @@ export default function PostJobPage() {
               </div>
             </div>
 
-            {/* Remote vs Location Control */}
             <div className="mt-6 p-4 bg-[#18181b] rounded-lg border border-[#27272a] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <Switch
                 isSelected={isRemote}
@@ -393,14 +377,12 @@ export default function PostJobPage() {
             </div>
           </Fieldset>
 
-          {/* SECTION 2: Job Description */}
-          <Fieldset
-            legend="Job Description Details"
-            classNames={{
-              legend:
-                "text-sm font-semibold tracking-wide uppercase text-zinc-400 border-b border-[#1f1f23] pb-2 w-full mb-4",
-            }}
-          >
+    
+          <Fieldset>
+            <legend className="text-sm font-semibold tracking-wide uppercase text-zinc-400 border-b border-[#1f1f23] pb-2 w-full mb-4">
+              Job Description Details
+            </legend>
+
             <div className="space-y-5">
               <TextField
                 isInvalid={!!errors.description}
@@ -448,7 +430,6 @@ export default function PostJobPage() {
             </div>
           </Fieldset>
 
-          {/* Action Buttons */}
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#1f1f23]">
             <Button
               type="button"

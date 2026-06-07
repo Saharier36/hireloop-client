@@ -17,7 +17,7 @@ import { useSession } from "@/lib/auth-client";
 const navItems = [
   { icon: MdDashboard, label: "Dashboard", href: "/dashboard/recruiter" },
   { icon: MdBusiness, label: "Jobs", href: "/dashboard/recruiter/jobs" },
-  { icon: MdWork, label: "Creat a Job", href: "/dashboard/recruiter/jobs/new" },
+  { icon: MdWork, label: "Post a Job", href: "/dashboard/recruiter/jobs/new" },
   { icon: MdPeople, label: "Company Profile", href: "/dashboard/recruiter/company" },
   { icon: MdSettings, label: "Settings", href: "/dashboard/settings" },
 ];
