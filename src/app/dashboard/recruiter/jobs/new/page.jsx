@@ -22,6 +22,8 @@ import {
 } from "react-icons/fi";
 // Sonner import করা হয়েছে
 import { toast } from "sonner";
+import { createJob } from "@/lib/actions/jobs";
+import { redirect } from "next/navigation";
 
 export default function PostJobPage() {
   // Mock auto-filled company data for the recruiter
@@ -57,7 +59,7 @@ export default function PostJobPage() {
     // Sync visual errors to state fields
     setErrors(newErrors);
 
-    // 🔴 FIX: যদি কোনো এরর থাকে, তবে সাবমিশন থামিয়ে টোস্ট দেখাবে
+    // FIXME: যদি কোনো এরর থাকে, তবে সাবমিশন থামিয়ে টোস্ট দেখাবে
     if (Object.keys(newErrors).length > 0) {
       toast.error("Please fill in all the required fields!", {
         description: "Check the missing input indicators below.",
@@ -78,14 +80,18 @@ export default function PostJobPage() {
       createdAt: new Date().toISOString(),
     };
 
-    // 🟢 SUCCESS TOAST: ডেটা সফলভাবে পাস হলে
-    toast.success("Job listed successfully!", {
-      description: `${data.jobTitle} has been published.`,
-      position: "top-right",
-    });
 
-    console.log("Submitting Payload:", payload);
 
+    const res = await createJob(payload);
+    if (res.insertedId) {
+      // 🟢 SUCCESS TOAST: ডেটা সফলভাবে পাস হলে
+      toast.success("Job listed successfully!", {
+        description: `${data.jobTitle} has been published.`,
+      });
+      e.target.reset();
+      setIsRemote(false);
+      redirect ("/dashboard/recruiter")
+    }
     // এখানে আপনার API বা Database-এ পাঠানোর লজিক লিখতে পারেন
   };
 
